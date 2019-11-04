@@ -46,7 +46,7 @@ module mem_sqrt(
 
 	reg [35:0] mem [0:1023];
 
-	initial $readmemb("sqrt_v4.bin", mem);
+	initial $readmemb("sqrt.bin", mem);
 
 	always @ (posedge clk) begin
 		o_data <= mem[index];
