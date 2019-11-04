@@ -12,7 +12,7 @@ module fsqrt(
 	assign {s,e,i,a} = x;
 
 	wire d;
-	assign d = ~(x[23])
+	assign d = ~(x[23]);
 
 	reg s1;
 	reg [6:0] e1;
@@ -46,7 +46,7 @@ module mem_sqrt(
 
 	reg [35:0] mem [0:1023];
 
-	initial $readmemb("sqrt.bin", mem);
+	initial $readmemb("sqrt.mem", mem);
 
 	always @ (posedge clk) begin
 		o_data <= mem[index];

@@ -8,7 +8,6 @@ module fsub(
   output wire ovf);
   
   wire s1;
-  wire s2rev;
   wire s2;
   wire [7:0] e1;
   wire [7:0] e2;
@@ -16,9 +15,7 @@ module fsub(
   wire [22:0] m2;
      
   assign {s1, e1, m1} = x1;
-  assign {s2rev, e2, m2} = x2;
-
-  assign s2 = ~s2rev;
+  assign {~s2, e2, m2} = x2;
   
   wire [24:0] m1a;
   wire [24:0] m2a;  

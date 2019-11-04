@@ -68,8 +68,7 @@ module finv(
  	wire [7:0] ey;
  	wire [22:0] my;
 
- 	assign my = (calc2[45])? calc2[44:22] + calc2[21];
- 	calc2[43:21] + calc2[20];
+ 	assign my = (calc2[45])? calc2[44:22] + calc2[21]: calc2[43:21] + calc2[20];
 
  	assign ey = (calc2[45])? ~e - 1: ~e - 2;
 
