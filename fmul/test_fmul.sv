@@ -13,8 +13,8 @@ module test_fmul();
    int          s1,s2;
    logic [23:0] dy;
    bit [22:0] tm;
-   bit 	      fovf;
-   bit 	      checkovf;
+   bit        fovf;
+   bit        checkovf;
 
    assign x1 = x1i;
    assign x2 = x2i;
@@ -75,19 +75,25 @@ module test_fmul();
                         fy = fx1 * fx2;
                         fybit = $shortrealtobits(fy);
 
-			checkovf = i < 255 && j < 255;
-			if ( checkovf && fybit[30:23] == 255 ) begin
-			   fovf = 1;
-			end else begin
-			   fovf = 0;
-			end
+
+      checkovf = i < 255 && j < 255;
+      if ( checkovf && fybit[30:23] == 255 ) begin
+         fovf = 1;
+      end else begin
+         fovf = 0;
+      end
                         
                         #1;
 
                         if (y !== fybit || ovf !== fovf) begin
-                           $display("x1, x2 = %b %b", x1, x2);
-                           $display("%e %b %b", fy, $shortrealtobits(fy), fovf);
-                           $display("%e %b %b\n", $bitstoshortreal(y), y, ovf);
+                           $display("x1 = %b %b %b, %3d, %e",
+            x1[31], x1[30:23], x1[22:0], x1[30:23], $bitstoshortreal(x1));
+                           $display("x2 = %b %b %b, %3d, %e",
+            x2[31], x2[30:23], x2[22:0], x2[30:23], $bitstoshortreal(x2));
+                           $display("%e %b,%3d,%b %b", fy,
+            fybit[31], fybit[30:23], fybit[22:0], fovf);
+                           $display("%e %b,%3d,%b %b\n", $bitstoshortreal(y),
+            y[31], y[30:23], y[22:0], ovf);
                         end
                      end
                   end
@@ -119,25 +125,31 @@ module test_fmul();
                      fy = fx1 * fx2;
                      fybit = $shortrealtobits(fy);
                      
-		     checkovf = i < 255;
-		     if (checkovf && fybit[30:23] == 255) begin
-			fovf = 1;
-		     end else begin
-			fovf = 0;
-		     end
+         checkovf = i < 255;
+         if (checkovf && fybit[30:23] == 255) begin
+      fovf = 1;
+         end else begin
+      fovf = 0;
+         end
 
                      #1;
 
                      if (y !== fybit || ovf !== fovf) begin
-                        $display("x1, x2 = %b %b", x1, x2);
-                        $display("%e %b %b", fy, $shortrealtobits(fy), fovf);
-                        $display("%e %b %b\n", $bitstoshortreal(y), y, ovf);
+                        $display("x1 = %b %b %b, %3d, %e",
+         x1[31], x1[30:23], x1[22:0], x1[30:23], $bitstoshortreal(x1));
+                        $display("x2 = %b %b %b, %3d, %e",
+         x2[31], x2[30:23], x2[22:0], x2[30:23], $bitstoshortreal(x2));
+                        $display("%e %b,%3d,%b %b, %d", fy,
+         fybit[31], fybit[30:23], fybit[22:0], fovf, fybit);
+                        $display("%e %b,%3d,%b %b\n", $bitstoshortreal(y),
+         y[31], y[30:23], y[22:0], ovf);
                      end
                   end
                end
             end
          end
       end
+      $display("end of checking module fmul");
       $finish;
    end
 endmodule
