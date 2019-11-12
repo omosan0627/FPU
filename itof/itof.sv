@@ -58,7 +58,7 @@ module itof(
 	wire [30:0] my;
 	assign my = ENCODER(mabs);
 	
-	y = (nonzero)? {s, my}: 32'b0;
+	assign y = (nonzero)? {s, my}: 32'b0;
 
 endmodule
 

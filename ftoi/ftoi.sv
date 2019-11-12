@@ -18,9 +18,9 @@ module ftoi(
 	assign ma = {1'b1,m,8'b0};
 	assign mabs = ma >> shift[4:0];
 	assign my = (s)? (~mabs) + 1: mabs;
-	assign nonzero = e > 126;
+	assign nonzero = (e > 126);
 
-	y = (nonzero)? my: 32'b0;
+	assign y = (nonzero)? my: 32'b0;
 
 endmodule
 
