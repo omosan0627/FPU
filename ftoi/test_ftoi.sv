@@ -13,15 +13,15 @@ module test_ftoi();
    int          s1,s2;
    logic [23:0] dy;
    bit [22:0] tm;
-   bit 	      fexception;
-   bit 	      checkexception;
+   bit        fexception;
+   bit        checkexception;
 
    assign x = x1i;
    
    ftoi u1(x,y);
 
    initial begin
-      // $dumpfile("test_fsqrt.vcd");
+      // $dumpfile("test_ftoi.vcd");
       // $dumpvars(0);
 
       for (i=0; i<256; i++) begin
@@ -70,24 +70,24 @@ module test_ftoi();
 
                         fx1 = $bitstoshortreal(x1i);
                         fy = fx1;
-                        fybit = $shortrealtobits(fy);
+                        fybit = fy;
 
 
-			if ( s1 == 1 || (i == 255 && m1 !== 0) ) begin
-			   fexception = 1;
-			end else begin
-			   fexception = 0;
-			end
+      if ( s1 == 1 || (i == 255 && m1 !== 0) ) begin
+         fexception = 1;
+      end else begin
+         fexception = 0;
+      end
                         
                         #1;
 
                         if ( ~(y - fybit == 1 || fybit - y == 1 || y == fybit)) begin
                            $display("x  = %b %b %b, %3d, %e",
-				    x[31], x[30:23], x[22:0], x[30:23], $bitstoshortreal(x));
+            x[31], x[30:23], x[22:0], x[30:23], $bitstoshortreal(x));
                            $display("%e %b,%3d,%b", fy,
-				    fybit[31], fybit[30:23], fybit[22:0]);
+            fybit[31], fybit[30:23], fybit[22:0]);
                            $display("%e %b,%3d,%b\n", $bitstoshortreal(y),
-				    y[31], y[30:23], y[22:0]);
+            y[31], y[30:23], y[22:0]);
                         end
                      end
                   end
@@ -116,23 +116,23 @@ module test_ftoi();
 
                      fx1 = $bitstoshortreal(x1i);
                      fy = fx1;
-                     fybit = $shortrealtobits(fy);
+                     fybit = fy;
                      
-		     if ( s1 == 1 || (i == 255 && m1 !== 0) ) begin
-			fexception = 1;
-		     end else begin
-			fexception = 0;
-		     end
+         if ( s1 == 1 || (i == 255 && m1 !== 0) ) begin
+      fexception = 1;
+         end else begin
+      fexception = 0;
+         end
 
                      #1;
 
                      if ( ~(y - fybit == 1 || fybit - y == 1 || y == fybit)) begin
                         $display("x  = %b %b %b, %3d, %e",
-				 x[31], x[30:23], x[22:0], x[30:23], $bitstoshortreal(x));
+         x[31], x[30:23], x[22:0], x[30:23], $bitstoshortreal(x));
                         $display("%e %b,%3d,%b, %d", fy,
-				 fybit[31], fybit[30:23], fybit[22:0], fybit);
+         fybit[31], fybit[30:23], fybit[22:0], fybit);
                         $display("%e %b,%3d, %b\n", $bitstoshortreal(y),
-				 y[31], y[30:23], y[22:0]);
+         y[31], y[30:23], y[22:0]);
                      end
                   end
                end
