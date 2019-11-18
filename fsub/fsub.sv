@@ -15,7 +15,9 @@ module fsub(
   wire [22:0] m2;
      
   assign {s1, e1, m1} = x1;
-  assign {~s2, e2, m2} = x2;
+  wire ts;
+  assign {ts, e2, m2} = x2;
+  assign s2 = ~ts;
   
   wire [24:0] m1a;
   wire [24:0] m2a;  
