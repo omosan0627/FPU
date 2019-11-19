@@ -2,10 +2,12 @@
 `default_nettype none
 
 module test_ftoi();
-   wire [31:0] x,y;
+   wire [31:0] x;
+   wire signed [31:0] y;
    wire        exception;
-   logic [31:0] x1i,x2i;
-   shortreal    fx1,fx2,fy;
+   logic [31:0] xi;
+   shortreal    fx,max,min;
+   int          fy;
    int          i,j,k,it,jt;
    bit [22:0]   m1,m2;
    bit [9:0]    dum1,dum2;
@@ -16,13 +18,16 @@ module test_ftoi();
    bit        fexception;
    bit        checkexception;
 
-   assign x = x1i;
+   assign x = xi;
    
    ftoi u1(x,y);
 
    initial begin
       // $dumpfile("test_ftoi.vcd");
       // $dumpvars(0);
+
+      max = $bitstoshortreal({1'b0,8'd158,23'b0});
+      min = $bitstoshortreal({1'b1,8'd158,23'b0});
 
       for (i=0; i<256; i++) begin
          for (j=0; j<256; j++) begin
@@ -48,32 +53,14 @@ module test_ftoi();
                              end
                           end
                         endcase
-
-                        case (jt)
-                          0 : m2 = 23'b0;
-                          1 : m2 = {22'b0,1'b1};
-                          2 : m2 = {21'b0,2'b10};
-                          3 : m2 = {1'b0,3'b111,19'b0};
-                          4 : m2 = {1'b1,22'b0};
-                          5 : m2 = {2'b10,{21{1'b1}}};
-                          6 : m2 = {23{1'b1}};
-                          default : begin
-                             if (i==256) begin
-                                {m2,dum2} = 0;
-                             end else begin
-                                {m2,dum2} = $urandom();
-                             end
-                          end
-                        endcase
                         
-                        x1i = {s1[0],i[7:0],m1};
+                        xi = {s1[0],i[7:0],m1};
 
-                        fx1 = $bitstoshortreal(x1i);
-                        fy = fx1;
-                        fybit = fy;
+                        fx = $bitstoshortreal(xi);
+                        fy = fx;
 
 
-      if ( s1 == 1 || (i == 255 && m1 !== 0) ) begin
+      if ( fx >= max || fx < min || i == 255 ) begin
          fexception = 1;
       end else begin
          fexception = 0;
@@ -81,13 +68,11 @@ module test_ftoi();
                         
                         #1;
 
-                        if ( ~(y - fybit == 1 || fybit - y == 1 || y == fybit)) begin
-                           $display("x  = %b %b %b, %3d, %e",
+                        if (y !== fy) begin
+                           $display("x = %b %b %b, %3d, %e",
             x[31], x[30:23], x[22:0], x[30:23], $bitstoshortreal(x));
-                           $display("%e %b,%3d,%b", fy,
-            fybit[31], fybit[30:23], fybit[22:0]);
-                           $display("%e %b,%3d,%b\n", $bitstoshortreal(y),
-            y[31], y[30:23], y[22:0]);
+                           $display("%d ", fy);
+                           $display("%d\n", y);
                         end
                      end
                   end
@@ -104,7 +89,7 @@ module test_ftoi();
                      #1;
 
                      {m1,dum1} = $urandom();
-                     x1i = {s1[0],i[7:0],m1};
+                     xi = {s1[0],i[7:0],m1};
                      {m2,dum2} = $urandom();
                      for (k=0;k<j;k++) begin
                         tm[k] = m2[k];
@@ -112,13 +97,11 @@ module test_ftoi();
                      for (k=j;k<23;k++) begin
                         tm[k] = m1[k];
                      end
-                     x2i = {s2[0],i[7:0],tm};
 
-                     fx1 = $bitstoshortreal(x1i);
-                     fy = fx1;
-                     fybit = fy;
+                     fx = $bitstoshortreal(xi);
+                     fy = fx;
                      
-         if ( s1 == 1 || (i == 255 && m1 !== 0) ) begin
+         if ( fx >= max || fx < min || i == 255 ) begin
       fexception = 1;
          end else begin
       fexception = 0;
@@ -126,13 +109,11 @@ module test_ftoi();
 
                      #1;
 
-                     if ( ~(y - fybit == 1 || fybit - y == 1 || y == fybit)) begin
-                        $display("x  = %b %b %b, %3d, %e",
+                     if (y !== fy) begin
+                        $display("x = %b %b %b, %3d, %e",
          x[31], x[30:23], x[22:0], x[30:23], $bitstoshortreal(x));
-                        $display("%e %b,%3d,%b, %d", fy,
-         fybit[31], fybit[30:23], fybit[22:0], fybit);
-                        $display("%e %b,%3d, %b\n", $bitstoshortreal(y),
-         y[31], y[30:23], y[22:0]);
+                        $display("%d ", fy);
+                        $display("%d\n", y);
                      end
                   end
                end
