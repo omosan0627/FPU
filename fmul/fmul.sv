@@ -162,9 +162,16 @@ module fmul(
   assign my = (myr[24] == 1'b1) ? 23'b0 :
               (myr[23] && ~|eyr) ? {myr[21:0], 1'b0} : myr[22:0];
 
-  assign y =  {sy,ey,my}; 
+  wire nzm1 = |m1;
+  wire nzm2 = |m2;
 
-  assign ovf = (e1 < 8'd255 && e2 < 8'd255 && ey == 8'd255) ? 1'b1 : 1'b0;
+  assign y = (e2 == 8'd255 && nzm2) ? {s2,8'd255,1'b1,m2[21:0]} :
+              (e1 == 8'd255 && nzm1) ? {s1,8'd255,1'b1,m1[21:0]} : 
+              (e1 == 8'd255 && e2 == 8'd0 && ~nzm2) ? {1'b1,8'd255,1'b1,m1[21:0]} :
+              (e2 == 8'd255 && e1 == 8'd0 && ~nzm1) ? {1'b1,8'd255,1'b1,m2[21:0]} : 
+              (e1 == 8'd255 || e2 == 8'd255) ? {sy,8'd255,23'b0} : 
+              (e1 < 8'd255 && e2 < 8'd255 && ey == 8'd255) ? {sy,8'd255,23'b0} : {sy,ey,my}; 
+   assign ovf = (e1 < 8'd255 && e2 < 8'd255 && ey == 8'd255) ? 1'b1 : 1'b0;
   
 endmodule
 
