@@ -152,22 +152,9 @@ module fadd(
   wire flag2;
   assign flag2 = ((myr[24]==1 && eyri==255) || flag1==1) ? 1 : 0; 
   wire sy;
-  assign sy = (ey==0 && my==0) ? s1&&s2 : ss;
+  assign sy = (ey==0 && my==0) ? s1&&s2 : ss;              
   
-  wire nzm1;
-  wire nzm2;
-  assign nzm1 = |(m1[22:0]); 
-  assign nzm2 = |(m2[22:0]);              
-  
-  assign y = 
-    (e1 == 8'd255 && e2 != 8'd255) ? {s1, 8'd255, nzm1, m1[21:0]} :
-    (e2 == 8'd255 && e1 != 8'd255) ? {s2, 8'd255, nzm2, m2[21:0]} :
-    (e1 == 8'd255 && e2 == 8'd255 && nzm2) ? {s2, 8'd255, 1'b1, m2[21:0]} :
-    (e1 == 8'd255 && e2 == 8'd255 && nzm1) ? {s1, 8'd255, 1'b1, m1[21:0]} :
-    (e1 == 8'd255 && e2 == 8'd255 && s1==s2) ? {s1, 8'd255, 23'b0} :
-    (e1 == 8'd255 && e2 == 8'd255) ? {1'b1, 8'd255, 1'b1, 22'b0} :   
-    {sy,ey,my};    
-    
+  assign y =  {sy,ey,my};
   
   assign ovf=(e1<255 && e2<255 && flag2==1) ? 1 : 0;
   
