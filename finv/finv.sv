@@ -16,7 +16,7 @@ module finv(
 		input [7:0] mh);
 	begin
 	case (mh)
-		8'b00000000: INV = 26'b11111111100000000011111111 ;
+	8'b00000000: INV = 26'b11111111100000000011111111 ;
         8'b00000001: INV = 26'b11111110100000100011110010 ;
         8'b00000010: INV = 26'b11111101100001100011000010 ;
         8'b00000011: INV = 26'b11111100100011000001010110 ;
@@ -272,13 +272,13 @@ module finv(
         8'b11111101: INV = 26'b10000000101000001100100011 ;
         8'b11111110: INV = 26'b10000000011000000100100000 ;
         8'b11111111: INV = 26'b10000000001000000000100000;
-		default : INV = 26'bx;
+	default : INV = 26'bx;
 	endcase
 	end
 	endfunction
 
 	wire [25:0] init;
-	assign init = INV(m[22:15]);
+	assign init = INV(ma[22:15]);
 
 	wire [74:0] k1;
  	assign k1 = {51'b0, ma} * {49'b0, init} * {49'b0, init};
@@ -310,7 +310,7 @@ module finv(
 
  	assign ey = (e == 8'd254)? ~e - 1: ~e - 2;
 
- 	assign y = {s,ey,my};
+ 	assign y = (my == 23'b0) ? {s,ey + 8'b1, my} : {s,ey,my};
 
  endmodule
 
