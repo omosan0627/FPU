@@ -20,7 +20,7 @@ module flt(
   wire nzm1 = |m1;
   wire nzm2 = |m2;
 
-  assign ty = (e2 == 8'd255 && nzm2) ? 1'b0 :
+  wire ty = (e2 == 8'd255 && nzm2) ? 1'b0 :
               (e1 == 8'd255 && nzm1) ? 1'b0 :
               (e1 == 8'b0 && m1 == 8'b0 && e2 == 8'b0 && m2 == 8'b0) ? 1'b0 : 
               ((s1 == 1'b1 || s2 == 1'b1) && x1 != x2) ? ~py : py;
