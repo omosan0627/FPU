@@ -72,7 +72,7 @@ module test_flt();
 
                         fx1 = $bitstoshortreal(x1i);
                         fx2 = $bitstoshortreal(x2i);
-                        fy = fx1 < fx2;
+                        fy = (fx1 < fx2);
 
 			checkexception = (i == 255 && m1 !== 0) || (j == 255 && m2 !== 0);
 			if ( checkexception ) begin
