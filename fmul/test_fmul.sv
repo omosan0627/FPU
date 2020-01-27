@@ -85,7 +85,7 @@ module test_fmul();
                         
                         #1;
 
-                        if (y !== fybit || ovf !== fovf) begin
+                
                            $display("x1 = %b %b %b, %3d, %e",
             x1[31], x1[30:23], x1[22:0], x1[30:23], $bitstoshortreal(x1));
                            $display("x2 = %b %b %b, %3d, %e",
@@ -94,7 +94,7 @@ module test_fmul();
             fybit[31], fybit[30:23], fybit[22:0], fovf);
                            $display("%e %b,%3d,%b %b\n", $bitstoshortreal(y),
             y[31], y[30:23], y[22:0], ovf);
-                        end
+                        
                      end
                   end
                end
@@ -134,7 +134,7 @@ module test_fmul();
 
                      #1;
 
-                     if (y !== fybit || ovf !== fovf) begin
+                     
                         $display("x1 = %b %b %b, %3d, %e",
          x1[31], x1[30:23], x1[22:0], x1[30:23], $bitstoshortreal(x1));
                         $display("x2 = %b %b %b, %3d, %e",
@@ -143,7 +143,7 @@ module test_fmul();
          fybit[31], fybit[30:23], fybit[22:0], fovf, fybit);
                         $display("%e %b,%3d,%b %b\n", $bitstoshortreal(y),
          y[31], y[30:23], y[22:0], ovf);
-                     end
+                     
                   end
                end
             end

@@ -84,11 +84,11 @@ module test_fsub();
                         
                         #1;
 
-                        if (y !== fybit || ovf !== fovf) begin
-                           $display("x1, x2 = %b %b", x1, x2);
-                           $display("%e %b %b", fy, $shortrealtobits(fy), fovf);
-                           $display("%e %b %b\n", $bitstoshortreal(y), y, ovf);
-                        end
+                        
+                           $display("%b %b", x1, x2);
+                           
+                           $display("%b\n", y);
+                        
                      end
                   end
                end
@@ -128,11 +128,11 @@ module test_fsub();
 
                      #1;
 
-                     if (y !== fybit || ovf !== fovf) begin
-                        $display("x1, x2 = %b %b", x1, x2);
-                        $display("%e %b %b", fy, $shortrealtobits(fy), fovf);
-                        $display("%e %b %b\n", $bitstoshortreal(y), y, ovf);
-                     end
+                     
+                        $display("%b %b", x1, x2);
+                        
+                        $display("%b\n", y);
+                     
                   end
                end
             end
