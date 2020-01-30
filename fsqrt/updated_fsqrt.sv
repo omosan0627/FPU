@@ -1,7 +1,5 @@
 `default_nettype none
 
-//未分割
-
 module fsqrt(
   input wire [31:0] x,
   output wire [31:0] y);
