@@ -2,6 +2,8 @@
 
 module fsqrt(
   input wire [31:0] x,
+  input wire clk,
+  input wire rstn,
   output wire [31:0] y);
 
   wire s;
@@ -235,32 +237,92 @@ module fsqrt(
   wire [50:0] k1;
   assign k1 = {26'b0, ma} * {23'b0, init};
 
+  logic [24:0] ma1;
+  logic [22:0] m1;
+  logic [7:0] ea1;
+  logic [26:0] init1;
+  logic [50:0] k11;
+  logic [31:0] x1;
+  logic s1;
+  logic [7:0] e1;
+
+  always @(posedge clk) begin
+    ma1 <= ma;
+    m1 <= m;
+    ea1 <= ea;
+    init1 <= init;
+    k11 <= k1;
+    x1 <= x;
+    s1 <= s;
+    e1 <= e;
+  end
+
   wire [49:0] l1;
-  assign l1 = {25'b0, init[26:2]} * {25'b0, init[26:2]};
+  assign l1 = {25'b0, init1[26:2]} * {25'b0, init1[26:2]};
 
   wire [49:0] m11;
-  assign m11 = {25'b0, k1[50:26]} * {25'b0, l1[49:25]};
+  assign m11 = {25'b0, k11[50:26]} * {25'b0, l1[49:25]};
+
+  logic [24:0] ma2;
+  logic [22:0] m2;
+  logic [7:0] ea2;
+  logic [26:0] init2;
+  logic [49:0] m12;
+  logic [31:0] x2;
+  logic s2;
+  logic [7:0] e2;
+
+  always @(posedge clk) begin
+    ma2 <= ma1;
+    m2 <= m1;
+    ea2 <= ea1;
+    init2 <= init1;
+    m12 <= m11;
+    x2 <= x1;
+    s2 <= s1;
+    e2 <= e1;
+  end
 
   wire [29:0] n1;
-  assign n1 = {1'b0, init, 1'b0} + {2'b0, init};
+  assign n1 = {1'b0, init2, 1'b0} + {2'b0, init2};
 
   wire [30:0] p1;
-  assign p1 = {n1, 1'b0} - {1'b0, m11[49:20]};
+  assign p1 = {n1, 1'b0} - {1'b0, m12[49:20]};
 
   wire [26:0] y1;
   assign y1 = (p1[1] && (p1[0] || p1[2])) ? {p1[28:2]} + 28'b1 : {p1[28:2]};
 
   wire [50:0] k2;
-  assign k2 = {26'b0, ma} * {23'b0, y1};
+  assign k2 = {26'b0, ma2} * {23'b0, y1};
 
   wire [49:0] l2;
   assign l2 = {25'b0, y1[26:2]} * {25'b0, y1[26:2]};
 
+  logic [22:0] m3;
+  logic [7:0] ea3;
+  logic [26:0] y11;
+  logic [50:0] k3;
+  logic [49:0] l21;
+  logic [31:0] x3;
+  logic s3;
+  logic [7:0] e3;
+
+  always @(posedge clk) begin
+    m3 <= m2;
+    ea3 <= ea2;
+    y11 <= y1;
+    k3 <= k2;
+    l21 <= l2;
+    x3 <= x2;
+    s3 <= s2;
+    e3 <= e2;
+  end
+
   wire [49:0] m21;
-  assign m21  = {25'b0, k2[50:26]} * {25'b0, l2[49:25]};
+  assign m21  = {25'b0, k3[50:26]} * {25'b0, l21[49:25]};
 
   wire [29:0] n2;
-  assign n2 = {1'b0, y1, 1'b0} + {2'b0, y1};
+  assign n2 = {1'b0, y11, 1'b0} + {2'b0, y11};
 
   wire [30:0] p2;
   assign p2 = {n2, 1'b0} - {1'b0, m21[49:20]};
@@ -276,26 +338,41 @@ module fsqrt(
   assign my = (mye[24]) ? 23'b0 : mye[22:0];
 
   wire [7:0] eye;
-  assign eye = (y2[26]) ? 254 - ea :
-                253 - ea;
+  assign eye = (y2[26]) ? 254 - ea3 :
+                253 - ea3;
 
   wire [7:0] ey;
   assign ey = (mye[24]) ? eye + 8'b1 : eye;
 
+  logic [22:0] m4;
+  logic [22:0] my1;
+  logic [7:0] ey1;
+  logic [31:0] x4;
+  logic s4;
+  logic [7:0] e4;
+  
+  always @(posedge clk) begin
+    m4 <= m3;
+    my1 <= my;
+    ey1 <= ey;
+    x4 <= x3;
+    s4 <= s3;
+    e4 <= e3;
+  end
+
   wire [31:0] y_mul;
   wire ovf_mul;
 
-  fmul u1(x, {s, ey, my}, y_mul, ovf_mul);
+  fmul u1(x4, {s4, ey1, my1}, y_mul, ovf_mul);
 
   wire nzm;
-  assign nzm = |m;
+  assign nzm = |m4;
 
-  assign y = (e == 8'd255 && nzm) ? {s,8'd255,1'b1,m[21:0]} : 
-              (s == 1'b0 && e == 8'd255 && ~nzm) ? {1'b0,8'd255,23'b0} :
-              (~|x) ? {1'b0,8'b0,23'b0} : 
-              (s == 1'b1 && ~|x[30:0]) ? {1'b1,8'b0,23'b0} : 
-              (s == 1'b1) ? {1'b1,8'd255,1'b1,22'b0} : y_mul;
-
+  assign y =  (e4 == 8'd255 && nzm) ? {s4,8'd255,1'b1,m4[21:0]} : 
+              (s4 == 1'b0 && e4 == 8'd255 && ~nzm) ? {1'b0,8'd255,23'b0} :
+              (~|x4) ? {1'b0,8'b0,23'b0} : 
+              (s4 == 1'b1 && ~|x4[30:0]) ? {1'b1,8'b0,23'b0} : 
+              (s4 == 1'b1) ? {1'b1,8'd255,1'b1,22'b0} : y_mul;
 endmodule
 
 `default_nettype wire
