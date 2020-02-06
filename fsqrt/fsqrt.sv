@@ -1,9 +1,11 @@
 `default_nettype none
 
-//未分割
+//分割済み
 
 module fsqrt(
   input wire [31:0] x,
+  input wire clk,
+  input wire rstn,
   output wire [31:0] y);
 
   wire s;
@@ -238,10 +240,28 @@ module fsqrt(
   wire [106:0] p1;
   assign p1 = ({27'b0,2'b11,78'b0} - ({80'b0,ma,2'b0} * {79'b0,init} * {79'b0,init})) * {79'b0,init};
   assign y1 = (p1[78] && (|p1[77:0] || p1[79])) ? p1[106:79] + 28'b1 : p1[106:79];
+
+  logic [24:0] ma1;
+  logic [22:0] m1;
+  logic [7:0] ea1;
+  logic [27:0] y11;
+  logic [31:0] x1;
+  logic s1;
+  logic [7:0] e1;
+
+  always @(posedge clk) begin
+    ma1 <= ma;
+    m1 <= m;
+    ea1 <= ea;
+    y11 <= y1;
+    x1 <= x;
+    s1 <= s;
+    e1 <= e;
+  end
   
   wire [27:0] y2;
   wire [106:0] p2;
-  assign p2 = ({27'b0,2'b11,78'b0} - ({80'b0,ma,2'b0} * {79'b0,y1} * {79'b0,y1})) * {79'b0,y1};
+  assign p2 = ({27'b0,2'b11,78'b0} - ({80'b0,ma1,2'b0} * {79'b0,y11} * {79'b0,y11})) * {79'b0,y11};
   assign y2 = (p2[78] && (|p2[77:0] || p2[79])) ? p2[106:79] + 28'b1 : p2[106:79];
 
   wire [24:0] mye;
@@ -254,26 +274,42 @@ module fsqrt(
   assign my = (mye[24]) ? 23'b0 : mye[22:0];
 
   wire [7:0] eye;
-  assign eye = (y2[27]) ? 255 - ea :
-                (y2[26]) ? 254 - ea :
-                (y2[25]) ? 253 - ea : 252 - ea;
+  assign eye = (y2[27]) ? 255 - ea1 :
+                (y2[26]) ? 254 - ea1 :
+                (y2[25]) ? 253 - ea1 : 252 - ea1;
 
   wire [7:0] ey;
   assign ey = (mye[24]) ? eye + 8'b1 : eye;
 
+  logic [22:0] m2;
+  logic [22:0] my1;
+  logic [7:0] ey1;
+  logic [31:0] x2;
+  logic s2;
+  logic [7:0] e2;
+  
+  always @(posedge clk) begin
+    m2 <= m1;
+    my1 <= my;
+    ey1 <= ey;
+    x2 <= x1;
+    s2 <= s1;
+    e2 <= e1;
+  end
+
   wire [31:0] y_mul;
   wire ovf_mul;
 
-  fmul u1(x, {s, ey, my}, y_mul, ovf_mul);
+  fmul u1(x2, {s2, ey1, my1}, y_mul, ovf_mul);
 
   wire nzm;
-  assign nzm = |m;
+  assign nzm = |m2;
 
-  assign y = (e == 8'd255 && nzm) ? {s,8'd255,1'b1,m[21:0]} : 
-              (s == 1'b0 && e == 8'd255 && ~nzm) ? {1'b0,8'd255,23'b0} :
-              (~|x) ? {1'b0,8'b0,23'b0} : 
-              (s == 1'b1 && ~|x[30:0]) ? {1'b1,8'b0,23'b0} : 
-              (s == 1'b1) ? {1'b1,8'd255,1'b1,22'b0} : y_mul;
+  assign y = (e2 == 8'd255 && nzm) ? {s2,8'd255,1'b1,m2[21:0]} : 
+              (s2 == 1'b0 && e2 == 8'd255 && ~nzm) ? {1'b0,8'd255,23'b0} :
+              (~|x2) ? {1'b0,8'b0,23'b0} : 
+              (s2 == 1'b1 && ~|x2[30:0]) ? {1'b1,8'b0,23'b0} : 
+              (s2 == 1'b1) ? {1'b1,8'd255,1'b1,22'b0} : y_mul;
 
 endmodule
 
