@@ -1,5 +1,7 @@
 `default_nettype none
 
+//分割版
+
 module finv(
 	input wire [31:0] x,
         input wire clk,
