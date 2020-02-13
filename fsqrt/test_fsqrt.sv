@@ -61,11 +61,11 @@ module test_finv();
                         
                         #1;
 
-                        
+                        if (y != fybit) begin
                            $display("%b", x);
                         
-                           $display("%b\n", y);
-                        
+                           $display("%b %b\n", y, fybit);
+                        end
                         
             end
          end
@@ -91,11 +91,11 @@ module test_finv();
 
                      #1;
 
-                     
+                     if (y != fybit) begin
                         $display("%b", x);
                         
-                        $display("%b\n", y);
-                    
+                        $display("%b %b\n", y, fybit);
+                    end
                     
             end
          end
